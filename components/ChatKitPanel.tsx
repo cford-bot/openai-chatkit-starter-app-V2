@@ -281,6 +281,9 @@ export function ChatKitPanel({
     threadItemActions: {
       feedback: false,
     },
+      threadHistory: {
+    enabled: false,  // Add this to disable the chat history button
+  },
     onClientTool: async (invocation: {
       name: string;
       params: Record<string, unknown>;
