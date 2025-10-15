@@ -197,6 +197,9 @@ export function ChatKitPanel({
               file_upload: {
                 enabled: true,
               },
+              voice: {
+      enabled: true,
+    },
             },
           }),
         });
