@@ -11,6 +11,7 @@ import {
   getThemeConfig,
 } from "@/lib/config";
 import { ErrorOverlay } from "./ErrorOverlay";
+import { VoiceInput } from "./VoiceInput";
 import type { ColorScheme } from "@/hooks/useColorScheme";
 
 export type FactAction = {
@@ -193,13 +194,9 @@ export function ChatKitPanel({
           body: JSON.stringify({
             workflow: { id: WORKFLOW_ID },
             chatkit_configuration: {
-              // enable attachments
               file_upload: {
                 enabled: true,
               },
-              voice: {
-      enabled: true,
-    },
             },
           }),
         });
@@ -277,19 +274,15 @@ export function ChatKitPanel({
     composer: {
       placeholder: PLACEHOLDER_INPUT,
       attachments: {
-        // Enable attachments
         enabled: true,
       },
-      voice: {
-    enabled: true,  // Add this to enable microphone input
-  },
     },
     threadItemActions: {
       feedback: false,
     },
-      threadHistory: {
-    enabled: false,  // Add this to disable the chat history button
-  },
+    threadHistory: {
+      enabled: false,
+    },
     onClientTool: async (invocation: {
       name: string;
       params: Record<string, unknown>;
@@ -333,11 +326,48 @@ export function ChatKitPanel({
       processedFacts.current.clear();
     },
     onError: ({ error }: { error: unknown }) => {
-      // Note that Chatkit UI handles errors for your users.
-      // Thus, your app code doesn't need to display errors on UI.
       console.error("ChatKit error", error);
     },
   });
+
+  // Handle voice transcript - insert text into ChatKit input
+  const handleVoiceTranscript = useCallback((transcript: string) => {
+    if (!transcript) return;
+
+    try {
+      // Try to find the ChatKit input field
+      const chatkitElement = document.querySelector("openai-chatkit");
+      
+      if (chatkitElement && chatkitElement.shadowRoot) {
+        // Look for textarea or input in shadow DOM
+        const input = chatkitElement.shadowRoot.querySelector(
+          'textarea[placeholder], input[type="text"]'
+        ) as HTMLTextAreaElement | HTMLInputElement;
+
+        if (input) {
+          // Set the value
+          input.value = transcript;
+          
+          // Trigger input event so ChatKit recognizes the change
+          const inputEvent = new Event("input", { bubbles: true });
+          input.dispatchEvent(inputEvent);
+          
+          // Focus the input
+          input.focus();
+          
+          if (isDev) {
+            console.log("[VoiceInput] Transcript inserted:", transcript);
+          }
+        } else {
+          console.warn("[VoiceInput] Could not find input field in ChatKit");
+        }
+      } else {
+        console.warn("[VoiceInput] Could not find ChatKit element");
+      }
+    } catch (error) {
+      console.error("[VoiceInput] Error inserting transcript:", error);
+    }
+  }, []);
 
   const activeError = errors.session ?? errors.integration;
   const blockingError = errors.script ?? activeError;
@@ -373,6 +403,7 @@ export function ChatKitPanel({
         onRetry={blockingError && errors.retryable ? handleResetChat : null}
         retryLabel="Restart chat"
       />
+      <VoiceInput onTranscript={handleVoiceTranscript} />
     </div>
   );
 }
