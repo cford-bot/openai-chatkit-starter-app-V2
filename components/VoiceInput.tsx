@@ -134,8 +134,3 @@ export function VoiceInput({ onTranscript }: VoiceInputProps) {
     </button>
   );
 }
-
-  return (
-    <button
-      onClick={toggleListening}
-      className={`fixed bottom-24 right-8 z-50 flex h-14 w-14 i
