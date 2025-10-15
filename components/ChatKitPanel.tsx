@@ -277,6 +277,9 @@ export function ChatKitPanel({
         // Enable attachments
         enabled: true,
       },
+      voice: {
+    enabled: true,  // Add this to enable microphone input
+  },
     },
     threadItemActions: {
       feedback: false,
