@@ -6,21 +6,20 @@ export const CREATE_SESSION_ENDPOINT = "/api/create-session";
 
 export const STARTER_PROMPTS: StartScreenPrompt[] = [
   {
-    icon: "circle-question",
-    label: "What is ChatKit?",
-    prompt: "What is ChatKit and what does it do?"
+    icon: "write",
+    label: "Build a narrative from scratch",
+    prompt: "Help me build a narrative from scratch"
   },
   {
     icon: "bolt",
-    label: "Get Started",
-    prompt: "Help me get started"
+    label: "Improve my existing narrative",
+    prompt: "Help me improve my existing narrative"
   },
   {
-    icon: "search",
-    label: "Search Info",
-    prompt: "I need information about..."
+    icon: "document",
+    label: "Build a billing statement",
+    prompt: "Help me build a billing statement"
   }
-  // Add more prompts here if you want
 ];
 
 export const PLACEHOLDER_INPUT = "Enter your narrative here. Do not input any PHI";
