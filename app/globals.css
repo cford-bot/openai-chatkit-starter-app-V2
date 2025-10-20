@@ -32,3 +32,11 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
 }
+/* Hide ChatKit history button */
+openai-chatkit::part(thread-history-button),
+openai-chatkit::part(history-button),
+openai-chatkit [data-testid*="history"],
+openai-chatkit [aria-label*="history" i],
+openai-chatkit [aria-label*="History" i] {
+  display: none !important;
+}
